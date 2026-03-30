@@ -1,0 +1,844 @@
+<!-- <!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trợ Lý Ảo HS Code & Kho Hàng</title>
+    <style>
+        :root {
+            --primary: #1E88E5;
+            --sidebar-bg: #1E293B; /* Màu tối sang trọng cho thanh bên */
+            --bg-color: #f4f7f6;
+            --chat-bg: #ffffff;
+            --user-msg: #1E88E5;
+            --bot-msg: #f1f3f4;
+            --text-color: #333;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0; padding: 0;
+            display: flex; /* Dùng Flexbox để chia 2 cột */
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ================= SIDEBAR (CỘT TRÁI) ================= */
+        .sidebar {
+            width: 320px;
+            background-color: var(--sidebar-bg);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+        .sidebar-header {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .instruction-box {
+            background-color: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        .instruction-box h3 {
+            margin-top: 0;
+            color: #60A5FA;
+            font-size: 1rem;
+        }
+        .instruction-box ul {
+            padding-left: 15px;
+            margin: 0;
+        }
+        .instruction-box li {
+            margin-bottom: 10px;
+        }
+        .instruction-box code {
+            background: #1E293B;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #38BDF8;
+            display: block;
+            margin-top: 4px;
+        }
+        .btn-clear {
+            background-color: transparent;
+            color: #EF4444;
+            border: 1px solid #EF4444;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .btn-clear:hover {
+            background-color: #EF4444;
+            color: white;
+        }
+
+        /* ================= MAIN CHAT (CỘT PHẢI) ================= */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            background-color: var(--bg-color);
+        }
+        .chat-container {
+            width: 100%;
+            max-width: 950px; /* Tăng không gian hiển thị bảng */
+            background-color: var(--chat-bg);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+        }
+        .chat-box {
+            flex-grow: 1; padding: 25px;
+            overflow-y: auto; display: flex; flex-direction: column; gap: 20px;
+        }
+        .message {
+            max-width: 85%; padding: 14px 18px; border-radius: 8px; line-height: 1.5;
+            word-wrap: break-word; font-size: 0.95rem;
+        }
+        .message.user {
+            align-self: flex-end; background-color: var(--user-msg); color: white;
+            border-bottom-right-radius: 0; box-shadow: 0 2px 5px rgba(30,136,229,0.2);
+        }
+        .message.bot {
+            align-self: flex-start; background-color: var(--bot-msg); color: var(--text-color);
+            border-bottom-left-radius: 0; border: 1px solid #e2e8f0; width: 100%;
+        }
+        
+        .input-area {
+            padding: 20px; background-color: white; border-top: 1px solid #e2e8f0;
+            display: flex; gap: 15px;
+        }
+        .input-area input {
+            flex-grow: 1; padding: 15px; border: 1px solid #cbd5e1;
+            border-radius: 30px; font-size: 1rem; outline: none; transition: 0.3s;
+        }
+        .input-area input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(30,136,229,0.1); }
+        .input-area button {
+            background-color: var(--primary); color: white; border: none; font-weight: bold;
+            padding: 0 30px; border-radius: 30px; cursor: pointer; font-size: 1rem; transition: 0.3s;
+        }
+        .input-area button:hover { background-color: #1565C0; }
+
+        /* ================= BẢNG & COMPONENT ================= */
+        .result-box { margin-top: 10px; padding: 15px; border-radius: 6px; background: white; border: 1px solid #e2e8f0;}
+        .rule-code { color: #16a34a; font-weight: bold; font-size: 1.2em; }
+        .ai-code { color: #2563eb; font-weight: bold; font-size: 1.2em; }
+        .alert-info { background-color: #f0fdf4; padding: 12px; border-radius: 6px; margin-top: 8px;}
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9em;}
+        th, td { border: 1px solid #cbd5e1; padding: 10px; text-align: left; }
+        th { background-color: #f8fafc; font-weight: 600; color: #334155; }
+        
+        .btn-excel {
+            background-color: #16a34a; color: white; border: none;
+            padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 0.85rem;
+            margin-top: 10px; display: inline-flex; align-items: center; gap: 5px; transition: 0.2s;
+        }
+        .btn-excel:hover { background-color: #15803d; }
+
+        /* Hiệu ứng gõ chữ */
+        .typing-cursor::after {
+            content: ' ▋'; animation: blink 0.8s step-start infinite; color: var(--primary);
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* Responsive cho Mobile */
+        @media (max-width: 768px) {
+            body { flex-direction: column; overflow: auto;}
+            .sidebar { width: 100%; padding: 15px; box-sizing: border-box;}
+            .chat-container { height: 70vh; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="sidebar-header">
+        📦 Trợ Lý ERP
+    </div>
+    
+    <div class="instruction-box">
+        <h3>💡 Gợi ý lệnh (Hãy copy)</h3>
+        <ul>
+            <li><b>Phân tích HS Code:</b>
+                <code>Ghế sofa khung gỗ Óc Chó bọc vải</code>
+            </li>
+            <li><b>Tra tồn kho Màu/Vải:</b>
+                <code>Tìm sofa màu Green</code>
+            </li>
+            <li><b>Tính đóng Cont (CBM):</b>
+                <code>Tính CBM 25 ghế MD 1801</code>
+            </li>
+            <li><b>Tra định mức vật tư (BOM):</b>
+                <code>Tra BOM mã 24000258</code>
+                <code>Để sản xuất 200 mã 50005284 cần vật tư gì?</code>
+            </li>
+            <li><b>Tra cứu tên mã số:</b>
+                <code>50005284</code>
+            </li>
+        </ul>
+        <div style="margin-top: 15px; font-size: 0.85em; color: #94A3B8;">
+            * Mẹo: Hệ thống có khả năng tự nối trí nhớ. Bạn có thể gõ "Tìm ghế màu đỏ", sau đó gõ tiếp "màu xanh", AI sẽ tự hiểu.
+        </div>
+    </div>
+
+    <button class="btn-clear" onclick="clearChat()">🗑️ Xóa lịch sử Chat</button>
+</div>
+
+<div class="main-content">
+    <div class="chat-container">
+        <div class="chat-box" id="chat-box">
+            <div class="message bot">
+                👋 Chào bạn! Tôi là Trợ Lý Ảo. Các hướng dẫn lệnh đã được ghim ở cột bên trái. Bạn cần tôi giúp gì hôm nay?
+            </div>
+        </div>
+        
+        <div class="input-area">
+            <input type="text" id="user-input" placeholder="Nhập mã sản phẩm, lệnh tra cứu vào đây..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()" id="send-btn">Gửi</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const chatBox = document.getElementById('chat-box');
+    const userInput = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+    let isTyping = false; 
+
+    function appendMessage(sender, htmlContent) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${sender}`;
+        msgDiv.innerHTML = htmlContent;
+        chatBox.appendChild(msgDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // Xóa khung chat
+    function clearChat() {
+        chatBox.innerHTML = `<div class="message bot">Lịch sử trò chuyện đã được xóa. Tôi có thể giúp gì cho bạn?</div>`;
+    }
+
+    // [TÍNH NĂNG MỚI] Xuất bảng ra file Excel
+    function exportTableToExcel(tableId, filename = '') {
+        var downloadLink;
+        var dataType = 'application/vnd.ms-excel';
+        var tableSelect = document.getElementById(tableId);
+        
+        // Thêm UTF-8 BOM để Excel hiển thị tiếng Việt có dấu chuẩn xác
+        var tableHTML = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"></head><body>' + tableSelect.outerHTML + '</body></html>';
+
+        filename = filename ? filename + '.xls' : 'BaoCao_HeThong.xls';
+        downloadLink = document.createElement("a");
+        document.body.appendChild(downloadLink);
+
+        if(navigator.msSaveOrOpenBlob){
+            var blob = new Blob(['\ufeff', tableHTML], { type: dataType });
+            navigator.msSaveOrOpenBlob( blob, filename);
+        } else {
+            downloadLink.href = 'data:' + dataType + ';base64,' + btoa(unescape(encodeURIComponent(tableHTML)));
+            downloadLink.download = filename;
+            downloadLink.click();
+        }
+    }
+
+    async function appendMessageTyping(sender, htmlContent) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${sender} typing-cursor`; 
+        chatBox.appendChild(msgDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        let index = 0;
+        let speed = 5; 
+
+        while (index < htmlContent.length) {
+            if (htmlContent.charAt(index) === '<') {
+                let closeTagIndex = htmlContent.indexOf('>', index);
+                if (closeTagIndex !== -1) {
+                    index = closeTagIndex + 1;
+                    msgDiv.innerHTML = htmlContent.substring(0, index);
+                    continue; 
+                }
+            } 
+            index++;
+            msgDiv.innerHTML = htmlContent.substring(0, index);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            await new Promise(resolve => setTimeout(resolve, speed));
+        }
+
+        msgDiv.classList.remove('typing-cursor');
+        isTyping = false;
+        userInput.disabled = false;
+        sendBtn.disabled = false;
+        userInput.focus();
+    }
+
+    function handleKeyPress(e) {
+        if (e.key === 'Enter') sendMessage();
+    }
+
+    async function sendMessage() {
+        if (isTyping) return; 
+        
+        const text = userInput.value.trim();
+        if (!text) return;
+
+        isTyping = true;
+        userInput.disabled = true;
+        sendBtn.disabled = true;
+
+        appendMessage('user', text);
+        userInput.value = '';
+
+        const loadingId = 'loading-' + Date.now();
+        appendMessage('bot', `<span id="${loadingId}">⏳ Đang phân tích dữ liệu...</span>`);
+
+        try {
+            const response = await fetch('/api/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_input: text })
+            });
+
+            const data = await response.json();
+            
+            let loadingEl = document.getElementById(loadingId);
+            if (loadingEl && loadingEl.parentElement) loadingEl.parentElement.remove();
+
+            if (!response.ok) {
+                await appendMessageTyping('bot', `❌ Lỗi: ${data.detail}`);
+                return;
+            }
+
+            let botHTML = "";
+            let uniqueTableId = 'tbl_' + Date.now(); // Tạo ID động cho bảng để xuất Excel
+
+            if (data.search_mode === 'chitchat') {
+                botHTML = `💬 ${data.message}`;
+
+            } else if (data.search_mode === 'cbm_multi') {
+                botHTML = `<b>📦 KẾT QUẢ ĐÓNG CONT / TÍNH CBM ĐA SẢN PHẨM</b><br><br>`;
+                
+                if (data.data && data.data.length > 0) {
+                    botHTML += `<table id="${uniqueTableId}"><tr>
+                                    <th>SL</th>
+                                    <th>Mã SP</th>
+                                    <th>Tên Sản Phẩm</th>
+                                    <th>CBM/cái</th>
+                                    <th>Tổng CBM (m³)</th>
+                                    <th>Trạng thái</th>
+                                </tr>`;
+                    data.data.forEach(item => {
+                        let statusColor = item.Check_Kho.includes('KHÔNG') ? 'color: red; font-weight: bold;' : 'color: green;';
+                        botHTML += `<tr>
+                                        <td style="text-align: center; font-weight: bold; color: #1E88E5;">${item.Request_Qty}</td>
+                                        <td>${item.Code}</td>
+                                        <td>${item.Name}</td>
+                                        <td>${item.Unit_CBM.toFixed(5)}</td>
+                                        <td style="font-weight: bold; color: #d32f2f;">${item.Total_CBM.toFixed(5)}</td>
+                                        <td style="${statusColor}">${item.Check_Kho}</td>
+                                    </tr>`;
+                    });
+                    botHTML += `</table>`;
+                    botHTML += `<button class="btn-excel" onclick="exportTableToExcel('${uniqueTableId}', 'BaoCao_CBM')">📥 Tải bảng CBM xuống Excel</button>`;
+                    
+                    botHTML += `
+                        <div style="margin-top: 15px; padding: 15px; background-color: #e3f2fd; border-left: 5px solid #1E88E5; border-radius: 4px;">
+                            <span style="font-size: 1.1em; color: #0d47a1;">📊 <b>TỔNG THỂ TÍCH (GRAND TOTAL):</b></span>
+                            <span style="font-size: 1.5em; color: #d32f2f; font-weight: bold; float: right;">${data.grand_total.toFixed(5)} m³</span>
+                        </div>
+                    `;
+                }
+
+                if (data.not_found && data.not_found.length > 0) {
+                    botHTML += `<div style="margin-top: 15px; padding: 10px; background-color: #fff3e0; border: 1px solid #ffb74d; border-radius: 4px;">
+                                ⚠️ <b>Không tìm thấy dữ liệu cho:</b><ul>`;
+                    data.not_found.forEach(err_item => { botHTML += `<li style="color: #e65100;"><i>'${err_item}'</i></li>`; });
+                    botHTML += `</ul></div>`;
+                }
+
+            } else if (data.search_mode === 'lookup') {
+                botHTML = `<b>🔍 TRA CỨU THÔNG TIN MÃ SẢN PHẨM</b><br><br>`;
+                botHTML += `Đang tìm mã: <b>${data.keyword}</b><br>`;
+                
+                if (data.data && data.data.length > 0) {
+                    botHTML += `<table id="${uniqueTableId}"><tr>
+                                    <th>Mã SP</th>
+                                    <th>Tên Sản Phẩm</th>
+                                    <th>Vị trí tìm thấy</th>
+                                </tr>`;
+                    data.data.forEach(item => {
+                        botHTML += `<tr>
+                                        <td style="font-weight: bold; color: #1E88E5; text-align: center;">${item.Code}</td>
+                                        <td>${item.Name}</td>
+                                        <td><span style="background: #e3f2fd; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; color: #0d47a1;">${item.SourceTable}</span></td>
+                                    </tr>`;
+                    });
+                    botHTML += `</table>`;
+                }
+
+            } else if (data.search_mode === 'bom') {
+                botHTML = `<b>⚙️ BẢNG ĐỊNH MỨC NGUYÊN VẬT LIỆU (BOM)</b><br><br>`;
+                botHTML += `<b>Sản phẩm:</b> <span style="color:#1E88E5;">${data.product_info}</span><br>`;
+                botHTML += `<b>Phiên bản BOM:</b> <span style="color:#FF8C00; font-weight:bold;">${data.bom_info}</span><br>`;
+                botHTML += `<b>Lệnh sản xuất:</b> <span style="color:#d32f2f; font-weight:bold;">${data.quantity}</span> chiếc<br>`;
+                
+                if (data.data && data.data.length > 0) {
+                    botHTML += `<table id="${uniqueTableId}"><tr>
+                                    <th>Mã Vật Tư</th>
+                                    <th>Tên Vật Tư</th>
+                                    <th>ĐVT</th>
+                                    <th>Định mức 1 cái</th>
+                                    <th>Tổng cần xuất</th>
+                                </tr>`;
+                    data.data.forEach(item => {
+                        botHTML += `<tr>
+                                        <td>${item.MaterialCode}</td>
+                                        <td>${item.MaterialName}</td>
+                                        <td style="text-align: center;">${item.Unit}</td>
+                                        <td style="text-align: right;">${item.BaseQty.toLocaleString('en-US', {maximumFractionDigits: 5})}</td>
+                                        <td style="text-align: right; font-weight: bold; color: #d32f2f;">${item.TotalQty.toLocaleString('en-US', {maximumFractionDigits: 5})}</td>
+                                    </tr>`;
+                    });
+                    botHTML += `</table>`;
+                    botHTML += `<button class="btn-excel" onclick="exportTableToExcel('${uniqueTableId}', 'BOM_${data.product_info.split(' - ')[0]}')">📥 Tải BOM xuống Excel</button>`;
+                }
+
+            } else if (data.search_mode === 'fabric' || data.search_mode === 'color_only') {
+                let fData = data.search_mode === 'fabric' ? data.fabric_data : data.color_data;
+                let title = data.search_mode === 'fabric' ? '🧵 TÌM THẤY VẢI/NGUYÊN LIỆU' : '🎨 TÌM THẤY TRONG KHO';
+                
+                botHTML = `<b>${title}</b><br>Từ khóa: '${fData.keyword}'. Tìm thấy ${fData.count} mục.<br>`;
+                botHTML += `<table id="${uniqueTableId}"><tr><th>Mã</th><th>Tên SP</th><th>Nguồn</th></tr>`;
+                
+                let items = data.search_mode === 'fabric' ? fData.data : fData.products;
+                items.slice(0, 15).forEach(item => { 
+                    botHTML += `<tr><td>${item.Code || item.ProductCode}</td><td>${item.Name || item.ProductName}</td><td>${item.SourceTable || item.ColorVIE}</td></tr>`;
+                });
+                botHTML += `</table>`;
+                if (fData.count > 15) botHTML += `<small><i>(Chỉ hiển thị 15 kết quả đầu tiên)</i></small><br>`;
+                
+                botHTML += `<button class="btn-excel" onclick="exportTableToExcel('${uniqueTableId}', 'TraCuuKho')">📥 Tải bảng xuống Excel</button>`;
+
+            } else { // HS CODE
+                botHTML = `<div style="display:flex; gap:10px;">`;
+                botHTML += `<div class="result-box" style="flex:1;">🛡️ <b>LUẬT:</b><br><span class="rule-code">${data.rule_code || 'Không có'}</span><br><small>${data.rule_note || ''}</small></div>`;
+                botHTML += `<div class="result-box" style="flex:1;">🤖 <b>AI Dự đoán:</b><br><span class="ai-code">${data.ai_code}</span><br><small>Độ tin cậy: ${data.ai_conf.toFixed(1)}%</small></div>`;
+                botHTML += `</div>`;
+                
+                if (data.recommendation) {
+                    let color = data.msg_type === 'success' ? '#16a34a' : (data.msg_type === 'error' ? '#dc2626' : '#d97706');
+                    botHTML += `<div class="alert-info" style="color: ${color}; border-left: 4px solid ${color};"><b>💡 Khuyến nghị:</b> ${data.recommendation}</div>`;
+                }
+
+                if (data.color_data) {
+                    botHTML += `<div class="alert-info">🎨 Phát hiện màu <b>'${data.color_data.keyword}'</b> trong mô tả (${data.color_data.count} sp kho).</div>`;
+                }
+            }
+
+            if (data.next_action_hint) {
+                botHTML += `
+                    <div style="margin-top: 15px; padding: 12px; background-color: #f8fafc; border-left: 4px solid #94a3b8; border-radius: 4px; font-size: 0.95em; color: #475569;">
+                        💡 <b>Gợi ý cho bạn:</b><br>${data.next_action_hint}
+                    </div>
+                `;
+            }
+
+            await appendMessageTyping('bot', botHTML);
+
+        } catch (error) {
+            let loadingEl = document.getElementById(loadingId);
+            if (loadingEl && loadingEl.parentElement) loadingEl.parentElement.remove();
+            
+            isTyping = false;
+            userInput.disabled = false;
+            sendBtn.disabled = false;
+            
+            await appendMessageTyping('bot', `🚨 Lỗi hiển thị dữ liệu: ${error.message}`);
+        }
+    }
+</script>
+
+</body>
+</html> -->
+<!--Version 2-->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trợ Lý Ảo HS Code & Kho Hàng</title>
+    <style>
+        :root {
+            --primary: #1E88E5;
+            --sidebar-bg: #1E293B; /* Màu tối sang trọng cho thanh bên */
+            --bg-color: #f4f7f6;
+            --chat-bg: #ffffff;
+            --user-msg: #1E88E5;
+            --bot-msg: #f1f3f4;
+            --text-color: #333;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0; padding: 0;
+            display: flex; /* Dùng Flexbox để chia 2 cột */
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ================= SIDEBAR (CỘT TRÁI) ================= */
+        .sidebar {
+            width: 320px;
+            background-color: var(--sidebar-bg);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+        .sidebar-header {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .instruction-box {
+            background-color: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        .instruction-box h3 { margin-top: 0; color: #60A5FA; font-size: 1rem; }
+        .instruction-box ul { padding-left: 15px; margin: 0; }
+        .instruction-box li { margin-bottom: 10px; }
+        .instruction-box code { background: #1E293B; padding: 2px 6px; border-radius: 4px; color: #38BDF8; display: block; margin-top: 4px; }
+        
+        .btn-clear {
+            background-color: transparent; color: #EF4444; border: 1px solid #EF4444; padding: 10px; border-radius: 6px; cursor: pointer; margin-top: 20px; font-weight: bold; transition: 0.3s;
+        }
+        .btn-clear:hover { background-color: #EF4444; color: white; }
+
+        /* [MỚI] Nút Tắt Hệ Thống */
+        .btn-shutdown {
+            background-color: transparent; color: #94A3B8; border: 1px solid #94A3B8; padding: 10px; border-radius: 6px; cursor: pointer; margin-top: 10px; font-weight: bold; transition: 0.3s;
+        }
+        .btn-shutdown:hover { background-color: #475569; color: white; border-color: #475569;}
+
+        /* ================= MAIN CHAT (CỘT PHẢI) ================= */
+        .main-content { flex-grow: 1; display: flex; justify-content: center; background-color: var(--bg-color); }
+        .chat-container { width: 100%; max-width: 950px; background-color: var(--chat-bg); display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(0,0,0,0.05); }
+        .chat-box { flex-grow: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+        .message { max-width: 85%; padding: 14px 18px; border-radius: 8px; line-height: 1.5; word-wrap: break-word; font-size: 0.95rem; }
+        .message.user { align-self: flex-end; background-color: var(--user-msg); color: white; border-bottom-right-radius: 0; box-shadow: 0 2px 5px rgba(30,136,229,0.2); }
+        .message.bot { align-self: flex-start; background-color: var(--bot-msg); color: var(--text-color); border-bottom-left-radius: 0; border: 1px solid #e2e8f0; width: 100%; }
+        
+        .input-area { padding: 20px; background-color: white; border-top: 1px solid #e2e8f0; display: flex; gap: 15px; }
+        .input-area input { flex-grow: 1; padding: 15px; border: 1px solid #cbd5e1; border-radius: 30px; font-size: 1rem; outline: none; transition: 0.3s; }
+        .input-area input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(30,136,229,0.1); }
+        .input-area button { background-color: var(--primary); color: white; border: none; font-weight: bold; padding: 0 30px; border-radius: 30px; cursor: pointer; font-size: 1rem; transition: 0.3s; }
+        .input-area button:hover { background-color: #1565C0; }
+
+        /* ================= BẢNG & COMPONENT ================= */
+        .result-box { margin-top: 10px; padding: 15px; border-radius: 6px; background: white; border: 1px solid #e2e8f0;}
+        .rule-code { color: #16a34a; font-weight: bold; font-size: 1.2em; }
+        .ai-code { color: #2563eb; font-weight: bold; font-size: 1.2em; }
+        .alert-info { background-color: #f0fdf4; padding: 12px; border-radius: 6px; margin-top: 8px;}
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9em;}
+        th, td { border: 1px solid #cbd5e1; padding: 10px; text-align: left; }
+        th { background-color: #f8fafc; font-weight: 600; color: #334155; }
+        
+        .btn-excel { background-color: #16a34a; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 0.85rem; margin-top: 10px; display: inline-flex; align-items: center; gap: 5px; transition: 0.2s; }
+        .btn-excel:hover { background-color: #15803d; }
+
+        /* [CSS THÊM MỚI] Giao diện Nút chọn Model */
+        .model-btn { background-color: #f1f5f9; border: 1px solid #cbd5e1; color: #0f172a; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; margin: 5px 5px 0 0; transition: 0.2s; display: inline-block;}
+        .model-btn:hover { background-color: #1E88E5; color: white; border-color: #1E88E5; }
+
+        /* Hiệu ứng gõ chữ */
+        .typing-cursor::after { content: ' ▋'; animation: blink 0.8s step-start infinite; color: var(--primary); }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* Responsive cho Mobile */
+        @media (max-width: 768px) {
+            body { flex-direction: column; overflow: auto;}
+            .sidebar { width: 100%; padding: 15px; box-sizing: border-box;}
+            .chat-container { height: 70vh; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="sidebar-header">📦 Trợ Lý ERP</div>
+    <div class="instruction-box">
+        <h3>💡 Gợi ý lệnh (Hãy copy)</h3>
+        <ul>
+            <li><b>Phân tích HS Code:</b><code>Ghế sofa khung gỗ Óc Chó bọc vải</code></li>
+            <li><b>Tra tồn kho Màu/Vải:</b><code>Tìm sofa màu Green</code></li>
+            <li><b>Tính đóng Cont (CBM):</b><code>Tính CBM 25 ghế MD 1801</code></li>
+            <li><b>Tra định mức vật tư (BOM):</b><code>Tra BOM mã 24000258</code><code>Để sản xuất 200 mã 50005284 cần vật tư gì?</code></li>
+            <li><b>Tra cứu tên mã số:</b><code>50005284</code></li>
+        </ul>
+        <div style="margin-top: 15px; font-size: 0.85em; color: #94A3B8;">* Mẹo: Hệ thống có khả năng tự nối trí nhớ. Bạn có thể gõ "Tìm ghế màu đỏ", sau đó gõ tiếp "màu xanh", AI sẽ tự hiểu.</div>
+    </div>
+    <button class="btn-clear" onclick="clearChat()">🗑️ Xóa lịch sử Chat</button>
+    <button class="btn-shutdown" onclick="shutdownServer()">🔌 Tắt Hệ Thống</button>
+</div>
+
+<div class="main-content">
+    <div class="chat-container">
+        <div class="chat-box" id="chat-box">
+            <div class="message bot">👋 Chào bạn! Tôi là Trợ Lý Ảo. Các hướng dẫn lệnh đã được ghim ở cột bên trái. Bạn cần tôi giúp gì hôm nay?</div>
+        </div>
+        <div class="input-area">
+            <input type="text" id="user-input" placeholder="Nhập mã sản phẩm, lệnh tra cứu vào đây..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()" id="send-btn">Gửi</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const chatBox = document.getElementById('chat-box');
+    const userInput = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+    let isTyping = false; 
+
+    function appendMessage(sender, htmlContent) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${sender}`;
+        msgDiv.innerHTML = htmlContent;
+        chatBox.appendChild(msgDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function clearChat() {
+        chatBox.innerHTML = `<div class="message bot">Lịch sử trò chuyện đã được xóa. Tôi có thể giúp gì cho bạn?</div>`;
+    }
+
+    // [HÀM THÊM MỚI] Xử lý sự kiện bấm nút tắt máy
+    async function shutdownServer() {
+        const confirmShutdown = confirm("⚠️ CẢNH BÁO: Hành động này sẽ tắt hoàn toàn Trợ Lý Ảo.\nBạn sẽ phải mở lại bằng Terminal nếu muốn sử dụng tiếp.\n\nBạn có chắc chắn muốn tắt không?");
+        if (!confirmShutdown) return;
+
+        appendMessage('bot', "🔌 Đang gửi lệnh tắt hệ thống đến Server...");
+        try {
+            await fetch('/api/shutdown', { method: 'POST' });
+            appendMessage('bot', "🛑 <b>TRỢ LÝ ẢO ĐÃ TẮT.</b><br>Hệ thống đã được đóng an toàn. Bạn có thể đóng trình duyệt này.");
+            userInput.disabled = true;
+            sendBtn.disabled = true;
+            userInput.placeholder = "Hệ thống đã tắt...";
+        } catch (error) {
+            // Khi server tắt, fetch sẽ báo lỗi network error, đây là điều bình thường.
+            appendMessage('bot', "🛑 <b>TRỢ LÝ ẢO ĐÃ NGẮT KẾT NỐI.</b>");
+            userInput.disabled = true;
+            sendBtn.disabled = true;
+            userInput.placeholder = "Hệ thống đã tắt...";
+        }
+    }
+
+    function exportTableToExcel(tableId, filename = '') {
+        var downloadLink;
+        var dataType = 'application/vnd.ms-excel';
+        var tableSelect = document.getElementById(tableId);
+        var tableHTML = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"></head><body>' + tableSelect.outerHTML + '</body></html>';
+        filename = filename ? filename + '.xls' : 'BaoCao_HeThong.xls';
+        downloadLink = document.createElement("a");
+        document.body.appendChild(downloadLink);
+        if(navigator.msSaveOrOpenBlob){
+            var blob = new Blob(['\ufeff', tableHTML], { type: dataType });
+            navigator.msSaveOrOpenBlob( blob, filename);
+        } else {
+            downloadLink.href = 'data:' + dataType + ';base64,' + btoa(unescape(encodeURIComponent(tableHTML)));
+            downloadLink.download = filename;
+            downloadLink.click();
+        }
+    }
+
+    function selectBomModel(modelCode, prodCode, qty) {
+        let hiddenCommand = `Lọc BOM theo Model [${modelCode}] cho mã [${prodCode}] SL [${qty}]`;
+        userInput.value = hiddenCommand;
+        sendMessage();
+    }
+
+    async function appendMessageTyping(sender, htmlContent) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${sender} typing-cursor`; 
+        chatBox.appendChild(msgDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+        let index = 0;
+        let speed = 5; 
+        while (index < htmlContent.length) {
+            if (htmlContent.charAt(index) === '<') {
+                let closeTagIndex = htmlContent.indexOf('>', index);
+                if (closeTagIndex !== -1) {
+                    index = closeTagIndex + 1;
+                    msgDiv.innerHTML = htmlContent.substring(0, index);
+                    continue; 
+                }
+            } 
+            index++;
+            msgDiv.innerHTML = htmlContent.substring(0, index);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            await new Promise(resolve => setTimeout(resolve, speed));
+        }
+        msgDiv.classList.remove('typing-cursor');
+        isTyping = false;
+        userInput.disabled = false;
+        sendBtn.disabled = false;
+        userInput.focus();
+    }
+
+    function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
+
+    async function sendMessage() {
+        if (isTyping) return; 
+        const text = userInput.value.trim();
+        if (!text) return;
+
+        isTyping = true;
+        userInput.disabled = true;
+        sendBtn.disabled = true;
+        appendMessage('user', text);
+        userInput.value = '';
+
+        const loadingId = 'loading-' + Date.now();
+        appendMessage('bot', `<span id="${loadingId}">⏳ Đang phân tích dữ liệu...</span>`);
+
+        try {
+            const response = await fetch('/api/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_input: text })
+            });
+
+            const data = await response.json();
+            let loadingEl = document.getElementById(loadingId);
+            if (loadingEl && loadingEl.parentElement) loadingEl.parentElement.remove();
+
+            if (!response.ok) {
+                await appendMessageTyping('bot', `❌ Lỗi: ${data.detail}`);
+                return;
+            }
+
+            let botHTML = "";
+            let uniqueTableId = 'tbl_' + Date.now(); 
+
+            if (data.search_mode === 'chitchat') {
+                botHTML = `💬 ${data.message}`;
+
+            } else if (data.search_mode === 'bom_choice') {
+                botHTML = `<b>⚙️ CHỌN PHIÊN BẢN KẾT CẤU (MODEL)</b><br><br>`;
+                botHTML += `Sản phẩm <b>${data.product_code} - ${data.product_name}</b> có nhiều loại Model khác nhau. Vui lòng bấm chọn 1 Model bên dưới để xem BOM:<br><br>`;
+                botHTML += `<div style="display: flex; flex-wrap: wrap; gap: 10px;">`;
+                data.models.forEach(model => {
+                    botHTML += `<button class="model-btn" onclick="selectBomModel('${model}', '${data.product_code}', ${data.quantity})">🏷️ Model: ${model}</button>`;
+                });
+                botHTML += `</div>`;
+
+            } else if (data.search_mode === 'cbm_multi') {
+                botHTML = `<b>📦 KẾT QUẢ ĐÓNG CONT / TÍNH CBM ĐA SẢN PHẨM</b><br><br>`;
+                if (data.data && data.data.length > 0) {
+                    botHTML += `<table id="${uniqueTableId}"><tr><th>SL</th><th>Mã SP</th><th>Tên Sản Phẩm</th><th>CBM/cái</th><th>Tổng CBM (m³)</th><th>Trạng thái</th></tr>`;
+                    data.data.forEach(item => {
+                        let statusColor = item.Check_Kho.includes('KHÔNG') ? 'color: red; font-weight: bold;' : 'color: green;';
+                        botHTML += `<tr><td style="text-align: center; font-weight: bold; color: #1E88E5;">${item.Request_Qty}</td><td>${item.Code}</td><td>${item.Name}</td><td>${item.Unit_CBM.toFixed(5)}</td><td style="font-weight: bold; color: #d32f2f;">${item.Total_CBM.toFixed(5)}</td><td style="${statusColor}">${item.Check_Kho}</td></tr>`;
+                    });
+                    botHTML += `</table>`;
+                    botHTML += `<button class="btn-excel" onclick="exportTableToExcel('${uniqueTableId}', 'BaoCao_CBM')">📥 Tải bảng CBM xuống Excel</button>`;
+                    botHTML += `<div style="margin-top: 15px; padding: 15px; background-color: #e3f2fd; border-left: 5px solid #1E88E5; border-radius: 4px;"><span style="font-size: 1.1em; color: #0d47a1;">📊 <b>TỔNG THỂ TÍCH (GRAND TOTAL):</b></span><span style="font-size: 1.5em; color: #d32f2f; font-weight: bold; float: right;">${data.grand_total.toFixed(5)} m³</span></div>`;
+                }
+                if (data.not_found && data.not_found.length > 0) {
+                    botHTML += `<div style="margin-top: 15px; padding: 10px; background-color: #fff3e0; border: 1px solid #ffb74d; border-radius: 4px;">⚠️ <b>Không tìm thấy dữ liệu cho:</b><ul>`;
+                    data.not_found.forEach(err_item => { botHTML += `<li style="color: #e65100;"><i>'${err_item}'</i></li>`; });
+                    botHTML += `</ul></div>`;
+                }
+
+            } else if (data.search_mode === 'lookup') {
+                botHTML = `<b>🔍 TRA CỨU THÔNG TIN MÃ SẢN PHẨM</b><br><br>Đang tìm mã: <b>${data.keyword}</b><br>`;
+                if (data.data && data.data.length > 0) {
+                    botHTML += `<table id="${uniqueTableId}"><tr><th>Mã SP</th><th>Tên Sản Phẩm</th><th>Vị trí tìm thấy</th></tr>`;
+                    data.data.forEach(item => {
+                        botHTML += `<tr><td style="font-weight: bold; color: #1E88E5; text-align: center;">${item.Code}</td><td>${item.Name}</td><td><span style="background: #e3f2fd; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; color: #0d47a1;">${item.SourceTable}</span></td></tr>`;
+                    });
+                    botHTML += `</table>`;
+                }
+
+            } else if (data.search_mode === 'bom') {
+                botHTML = `<b>⚙️ BẢNG ĐỊNH MỨC NGUYÊN VẬT LIỆU (BOM)</b><br><br>`;
+                botHTML += `<b>Sản phẩm:</b> <span style="color:#1E88E5;">${data.product_info}</span><br>`;
+                botHTML += `<b>Phiên bản BOM:</b> <span style="color:#FF8C00; font-weight:bold;">${data.bom_info}</span><br>`;
+                botHTML += `<b>Lệnh sản xuất:</b> <span style="color:#d32f2f; font-weight:bold;">${data.quantity}</span> chiếc<br>`;
+                if (data.data && data.data.length > 0) {
+                    botHTML += `<table id="${uniqueTableId}"><tr><th>Mã Vật Tư</th><th>Tên Vật Tư</th><th>ĐVT</th><th>Định mức 1 cái</th><th>Tổng cần xuất</th></tr>`;
+                    data.data.forEach(item => {
+                        botHTML += `<tr><td>${item.MaterialCode}</td><td>${item.MaterialName}</td><td style="text-align: center;">${item.Unit}</td><td style="text-align: right;">${item.BaseQty.toLocaleString('en-US', {maximumFractionDigits: 5})}</td><td style="text-align: right; font-weight: bold; color: #d32f2f;">${item.TotalQty.toLocaleString('en-US', {maximumFractionDigits: 5})}</td></tr>`;
+                    });
+                    botHTML += `</table>`;
+                    botHTML += `<button class="btn-excel" onclick="exportTableToExcel('${uniqueTableId}', 'BOM_${data.product_info.split(' - ')[0]}')">📥 Tải BOM xuống Excel</button>`;
+                }
+
+            } else if (data.search_mode === 'fabric' || data.search_mode === 'color_only') {
+                let fData = data.search_mode === 'fabric' ? data.fabric_data : data.color_data;
+                let title = data.search_mode === 'fabric' ? '🧵 TÌM THẤY VẢI/NGUYÊN LIỆU' : '🎨 TÌM THẤY TRONG KHO';
+                botHTML = `<b>${title}</b><br>Từ khóa: '${fData.keyword}'. Tìm thấy ${fData.count} mục.<br>`;
+                botHTML += `<table id="${uniqueTableId}"><tr><th>Mã</th><th>Tên SP</th><th>Nguồn</th></tr>`;
+                let items = data.search_mode === 'fabric' ? fData.data : fData.products;
+                items.slice(0, 15).forEach(item => { 
+                    botHTML += `<tr><td>${item.Code || item.ProductCode}</td><td>${item.Name || item.ProductName}</td><td>${item.SourceTable || item.ColorVIE}</td></tr>`;
+                });
+                botHTML += `</table>`;
+                if (fData.count > 15) botHTML += `<small><i>(Chỉ hiển thị 15 kết quả đầu tiên)</i></small><br>`;
+                botHTML += `<button class="btn-excel" onclick="exportTableToExcel('${uniqueTableId}', 'TraCuuKho')">📥 Tải bảng xuống Excel</button>`;
+
+            } else { 
+                botHTML = `<div style="display:flex; gap:10px;">`;
+                botHTML += `<div class="result-box" style="flex:1;">🛡️ <b>LUẬT:</b><br><span class="rule-code">${data.rule_code || 'Không có'}</span><br><small>${data.rule_note || ''}</small></div>`;
+                botHTML += `<div class="result-box" style="flex:1;">🤖 <b>AI Dự đoán:</b><br><span class="ai-code">${data.ai_code}</span><br><small>Độ tin cậy: ${data.ai_conf.toFixed(1)}%</small></div></div>`;
+                if (data.recommendation) {
+                    let color = data.msg_type === 'success' ? '#16a34a' : (data.msg_type === 'error' ? '#dc2626' : '#d97706');
+                    botHTML += `<div class="alert-info" style="color: ${color}; border-left: 4px solid ${color};"><b>💡 Khuyến nghị:</b> ${data.recommendation}</div>`;
+                }
+                if (data.color_data) botHTML += `<div class="alert-info">🎨 Phát hiện màu <b>'${data.color_data.keyword}'</b> trong mô tả (${data.color_data.count} sp kho).</div>`;
+            }
+
+            if (data.next_action_hint) botHTML += `<div style="margin-top: 15px; padding: 12px; background-color: #f8fafc; border-left: 4px solid #94a3b8; border-radius: 4px; font-size: 0.95em; color: #475569;">💡 <b>Gợi ý cho bạn:</b><br>${data.next_action_hint}</div>`;
+
+            await appendMessageTyping('bot', botHTML);
+
+        } catch (error) {
+            let loadingEl = document.getElementById(loadingId);
+            if (loadingEl && loadingEl.parentElement) loadingEl.parentElement.remove();
+            isTyping = false; userInput.disabled = false; sendBtn.disabled = false;
+            await appendMessageTyping('bot', `🚨 Lỗi hiển thị dữ liệu: ${error.message}`);
+        }
+    }
+</script>
+
+</body>
+</html>

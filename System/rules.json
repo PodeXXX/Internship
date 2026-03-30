@@ -1,0 +1,47 @@
+[{
+    "code": "41079900",
+    "desc": "swatch da leather swatch mẫu da leather sample",
+    "excludes": ["ghế", "chair", "sofa", "khung", "frame", "chân", "leg", "tay", "armrest"],
+    "note": "Mẫu vật liệu bằng da (CẤM: Khung/Chân/Ghế)"
+},
+{
+    "code": "44219999",
+    "desc": "mẫu gỗ wood sample bảng mẫu gỗ",
+    "excludes": ["ghế", "chair", "sofa", "khung", "frame", "chân", "leg", "tay", "armrest"],
+    "note": "Mẫu vật liệu bằng gỗ (CẤM: Khung/Chân/Ghế)"
+},
+
+{
+    "code": "59039090",
+    "desc": "giả da simili pu pvc polyurethane leather fabric",
+    "excludes": ["ghế", "sofa", "chair"],
+    "note": "Nguyên liệu Giả da"
+},
+
+{
+    "code": "60063290",
+    "desc": "vải dệt kim dệt thoi dệt dọc nhuộm polyester cuộn vải fabric",
+    "excludes": ["ghế", "sofa", "chair", "bao áo", "vỏ"],
+    "note": "Nguyên liệu Vải cuộn"
+},
+
+{
+    "code": "63049190",
+    "desc": "bao áo bao gối vỏ gối bao nệm bao ghế sofa áo đệm áo ghế pillow case cushion cover fabric cover for sofa",
+    "excludes": ["ruột", "gòn", "foam", "frame", "khung", "chân", "leg"],
+    "note": "Vỏ bọc gối/nệm/ghế bằng vải (không chứa ruột)"
+},
+{
+    "code": "63079090",
+    "desc": "swatch vải fabric swatch mẫu vải fabric sample",
+    "excludes": ["da", "leather", "ghế", "chair", "sofa", "khung", "frame", "chân", "leg", "tay", "armrest"],
+    "note": "Mẫu vật liệu bằng vải (CẤM: Khung/Chân/Ghế)"
+},
+
+{
+    "code": "70060090",
+    "desc": "mặt bàn kính glass table top",
+    "excludes": ["gỗ", "wood", "chân", "leg", "khung", "frame"],
+    "note": "Mặt bàn bằng kính (không bao gồm chân/khung)"
+}
+]

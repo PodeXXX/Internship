@@ -1,0 +1,175 @@
+[{
+    "code": "41079900",
+    "desc": "swatch da leather swatch mẫu da leather sample",
+    "excludes": ["ghế", "chair", "sofa", "khung", "frame", "chân", "leg", "tay", "armrest"],
+    "note": "Mẫu vật liệu bằng da (CẤM: Khung/Chân/Ghế)"
+  },
+  {
+    "code": "44219999",
+    "desc": "mẫu gỗ wood sample bảng mẫu gỗ",
+    "excludes": ["ghế", "chair", "sofa", "khung", "frame", "chân", "leg", "tay", "armrest"],
+    "note": "Mẫu vật liệu bằng gỗ (CẤM: Khung/Chân/Ghế)"
+  },
+
+  {
+    "code": "59039090",
+    "desc": "giả da simili pu pvc polyurethane leather fabric",
+    "excludes": ["ghế", "sofa", "chair"],
+    "note": "Nguyên liệu Giả da"
+  },
+
+  {
+    "code": "60063290",
+    "desc": "vải dệt kim dệt thoi dệt dọc nhuộm polyester cuộn vải fabric",
+    "excludes": ["ghế", "sofa", "chair", "bao áo", "vỏ"],
+    "note": "Nguyên liệu Vải cuộn"
+  },
+
+  {
+    "code": "63049190",
+    "desc": "bao áo bao gối vỏ gối bao nệm bao ghế sofa áo đệm áo ghế pillow case cushion cover fabric cover for sofa",
+    "excludes": ["ruột", "gòn", "foam", "frame", "khung", "chân", "leg"],
+    "note": "Vỏ bọc gối/nệm/ghế bằng vải (không chứa ruột)"
+  },
+{
+    "code": "63079090",
+    "desc": "swatch vải fabric swatch mẫu vải fabric sample",
+    "excludes": ["da", "leather", "ghế", "chair", "sofa", "khung", "frame", "chân", "leg", "tay", "armrest"],
+    "note": "Mẫu vật liệu bằng vải (CẤM: Khung/Chân/Ghế)"
+  },
+
+  {
+    "code": "70060090",
+    "desc": "mặt bàn kính glass table top",
+    "excludes": ["gỗ", "wood", "chân", "leg", "khung", "frame"],
+    "note": "Mặt bàn bằng kính (không bao gồm chân/khung)"
+  },
+
+  {
+    "code": "94013100",
+    "desc": "ghế xoay văn phòng gỗ swivel chair wood chair mâm xoay rotating chair office chair",
+    "excludes": ["không xoay", "non swivel", "non-swivel", "fixed", "cố định", "bao", "vỏ", "cover", "tay ghế", "armrest", "cụm tay", "ổ điện", "socket", "bàn", "table", "kệ", "shelf", "tủ", "cabinet", "dining", "ghế ăn", "2S", "3S", "chaise", "lhf", "rhf", "góc", "sectional", "băng", "bench", "corner", "open end", "lounge", "thư giãn", "chân sắt", "chân kim loại", "steel leg", "metal leg"],
+    "note": "Ghế có chức năng xoay, điều chỉnh độ cao (bằng gỗ)"
+  },
+  {
+    "code": "94013900",
+    "desc": "ghế xoay văn phòng nhựa kim loại swivel chair metal plastic chair mâm xoay rotating chair office chair",
+    "excludes": ["không xoay", "non swivel", "non-swivel", "fixed", "cố định", "gỗ", "bao", "vỏ", "cover", "tay ghế", "armrest", "cụm tay", "ổ điện", "socket", "bàn", "table", "kệ", "shelf", "tủ", "cabinet", "dining", "ghế ăn", "2S", "3S", "chaise", "lhf", "rhf", "góc", "sectional", "băng", "bench", "corner", "open end", "lounge", "thư giãn"],
+    "note": "Ghế có chức năng xoay (kim loại/nhựa)"
+  },
+
+
+  {
+    "code": "94014100",
+    "desc": "giường bed convertible sleeper daybed mechanism futon click clack pull out mở ra thành giường",
+    "excludes": ["xoay", "swivel", "bao", "vỏ", "bench", "đôn", "giường ngủ", "tay ghế", "bàn", "tủ", "sắt", "metal", "dining", "ghế ăn"],
+    "note": "Ghế có thể chuyển thành giường (khung gỗ)"
+  },
+
+  {
+    "code": "94014900",
+    "desc": "ghế sofa bed giường khung sắt kim loại convertible chair metal sleeper daybed mechanism futon click clack pull out sofa mở ra thành giường chân sắt steel leg metal leg",
+    "excludes": ["gỗ", "bao", "vỏ", "cover", "case", "chaise", "lhf", "rhf", "góc", "sectional", "xoay", "swivel", "bench", "ghế băng", "đôn", "ottoman", "tay ghế", "armrest", "cụm tay", "ổ điện", "socket", "bàn", "table", "kệ", "shelf", "corner", "open end", "fixed", "cố định"],
+    "note": "Ghế có thể chuyển thành giường (khung kim loại/chân sắt)"
+  },
+
+
+  {
+    "code": "94016100",
+    "desc": "ghế ăn dining chair armchair lounge sectional góc băng bench đôn ottoman barstool thư giãn 1s 2s 3s",
+    "excludes": ["xoay", "bed", "giường", "parts", "chân ghế", "bao", "vỏ", "sleeper", "sắt", "metal", "mẫu gỗ"],
+    "note": "Ghế khung gỗ, đã nhồi đệm (Sofa, Dining, Lounge...)"
+  },
+
+  {
+    "code": "94017100",
+    "desc": "ghế kim loại bọc nệm ghế sắt dining chair ghế ăn sofa khung sắt chân sắt steel leg metal leg 2S 3S LHF RHF chaise lounge sectional sofa non swivel non-swivel cố định fixed seat bench ghế băng đôn ottoman sofa dining 1s corner góc open end ghế sofa chân sắt khung gỗ wood frame iron leg plywood frame metal leg",
+    "excludes": ["xoay", "swivel", "bed", "giường", "chân ghế", "parts", "bao", "vỏ", "cover", "case", "convertible", "sleeper", "mechanism", "futon", "tựa lưng", "backrest", "tay ghế", "armrest", "cụm tay", "ổ điện", "socket", "bàn", "table", "kệ", "shelf", "tủ", "cabinet", "chân gỗ", "wood leg", "wooden leg", "chân làm bằng gỗ", "beech", "dẻ gai", "rubber", "cao su", "oak", "sồi"],
+    "note": "Ghế khung kim loại / Chân sắt (bao gồm cả khung gỗ chân sắt)"
+  },
+
+  {
+    "code": "94018000",
+    "desc": "ghế lười beanbag ghế nhựa plastic chair ghế mây tre rattan chair",
+    "excludes": ["gỗ", "sắt", "kim loại", "thép", "wood", "metal", "bao", "vỏ", "cover", "case", "tựa lưng", "backrest", "tay ghế", "armrest", "cụm tay", "ổ điện", "socket", "bàn", "table", "kệ", "shelf"],
+    "note": "Ghế nhựa, mây tre hoặc ghế không khung (beanbag)"
+  },
+
+{
+    "code": "94019100",
+    "desc": "chân ghế gỗ khung ghế gỗ parts of seat wood tay ghế gỗ armrest cụm tay block armrest khung chân chân sofa wood frame frame gỗ khung sườn",
+    "excludes": ["giường", "bed", "bàn", "table", "tủ", "cabinet", "nệm", "bọc", "upholstered", "bao", "vỏ", "cover", "nguyên chiếc", "complete", "mẫu", "sample", "swatch"],
+    "note": "Bộ phận của ghế bằng gỗ (CẤM: Giường, Bàn, Tủ)"
+  },
+{
+    "code": "94019999",
+    "desc": "chân ghế sắt khung ghế kim loại parts of seat metal steel tay ghế armrest cụm tay block armrest khung chân chân sofa metal frame iron frame khung sắt",
+    "excludes": ["giường", "bed", "bàn", "table", "tủ", "cabinet", "gỗ", "wood", "nệm", "bao", "vỏ", "cover", "nguyên chiếc", "complete", "mẫu", "sample", "swatch"],
+    "note": "Bộ phận của ghế bằng kim loại/vật liệu khác (CẤM: Giường, Bàn, Tủ)"
+  },
+
+  {
+    "code": "94032090",
+    "desc": "bàn sắt kệ sắt tủ sắt metal furniture steel shelf cabinet",
+    "excludes": ["ghế", "seat", "bao", "vỏ", "cover", "ổ điện", "socket"],
+    "note": "Đồ nội thất bằng kim loại (Bàn, kệ, tủ...)"
+  },
+  {
+    "code": "94033000",
+    "desc": "bàn văn phòng gỗ tủ văn phòng gỗ wooden office furniture desk",
+    "excludes": ["ghế", "seat", "kim loại", "bao", "vỏ", "cover", "ổ điện", "socket"],
+    "note": "Đồ nội thất văn phòng bằng gỗ (Bàn, tủ hồ sơ...)"
+  },
+  {
+    "code": "94034000",
+    "desc": "tủ bếp gỗ kệ bếp gỗ wooden kitchen furniture cabinet",
+    "excludes": ["ghế", "seat", "bao", "vỏ", "cover", "ổ điện", "socket"],
+    "note": "Đồ nội thất nhà bếp bằng gỗ"
+  },
+
+  {
+    "code": "94035000",
+    "desc": "giường ngủ bedroom bed king bed queen bed đôi đơn trọn bộ nguyên chiếc",
+    "excludes": ["khung giường", "chân giường", "đầu giường", "ghế", "sofa", "bao", "vỏ"],
+    "note": "Đồ nội thất phòng ngủ bằng gỗ trọn bộ"
+  },
+
+  {
+    "code": "94036090",
+    "desc": "bàn gỗ kệ gỗ tủ gỗ trang trí wooden furniture other dining table round table coffee table side table end table console table",
+    "excludes": ["ghế", "seat", "bếp", "ngủ", "văn phòng", "kitchen", "bedroom", "office", "bao", "vỏ", "cover", "ổ điện", "socket"],
+    "note": "Đồ nội thất gỗ khác (Bàn ăn, bàn trà, kệ tivi, end table...)"
+  },
+
+  {
+    "code": "94039100",
+    "desc": "khung giường chân giường bed frame chân bàn khung bàn chân tủ đầu giường headboard parts",
+    "excludes": ["trọn bộ", "nguyên chiếc", "ghế", "sofa", "bọc", "nệm", "bao", "vỏ", "giường king", "giường queen"],
+    "note": "Bộ phận nội thất gỗ (Khung giường, chân bàn...)"
+  },
+
+  {
+    "code": "94039990",
+    "desc": "khung giường bọc vải khung giường bọc da đầu giường bọc vải đầu giường bọc da headboard upholstered bed frame upholstered ổ điện socket power strip phụ kiện furniture parts accessories",
+    "excludes": ["full gỗ", "bao", "vỏ", "cover", "ghế", "sofa", "chair", "gối", "pillow", "cushion"],
+    "note": "Bộ phận/Phụ kiện nội thất khác (Khung giường bọc nệm, Đầu giường bọc nệm, Ổ điện...)"
+  },
+  {
+    "code": "94042110",
+    "desc": "nệm ngủ cao su mattress cellular rubber",
+    "excludes": ["lò xo", "spring", "bao", "vỏ", "cover", "ghế", "chair", "sofa", "chân", "leg"],
+    "note": "Đệm ngủ bằng cao su"
+  },
+  {
+    "code": "94042910",
+    "desc": "nệm lò xo spring mattress",
+    "excludes": ["bao", "vỏ", "cover", "ghế", "chair", "sofa", "chân", "leg"],
+    "note": "Đệm ngủ lò xo"
+  },
+  {
+    "code": "94049000",
+    "desc": "gối nằm gối tựa nệm ngồi nệm tựa tựa lưng backrest back cushion pillow cushion nhồi gòn nhồi đệm stuffed",
+    "excludes": ["bao", "vỏ", "case", "cover", "giường", "bed", "chân", "leg", "khung", "frame"],
+    "note": "Các loại gối, đệm lót, tựa lưng (đã nhồi ruột)"
+  }
+]
